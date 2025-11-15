@@ -24,10 +24,23 @@ router.post("/chat",async(req,res)=>{
 // })
 
 router.get("/data",async(req,res)=>{
-  const resp = await chat.sendMessage({
-    message: payload,
-  });
-  res.send(resp.text);
+
+  //ytest
+  // const resp = await chat.sendMessage({
+  //   message: payload,
+  // });
+  // console.log(req.cookies);
+
+  //modifying test
+  // res.send(resp.text);
+
+  res.json({
+    "name":"Saurabh",
+    "team":"Explorers"
+  })
+
 })
+
+
 
 export default router;

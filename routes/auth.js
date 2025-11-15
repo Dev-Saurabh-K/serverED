@@ -11,8 +11,15 @@ router.post("/signup",signup,(req,res)=>{
 })
 
 router.post("/signin",signin,(req,res)=>{
+    const{username}=req.data;
     console.log(req.data);
-    res.send(req.body.username);
+    res.cookie("token", username, {
+      httpOnly: true,     // JS on frontend can’t access (security)
+      secure: false,      // true if using https
+      sameSite: "lax",    // "strict" or "none" (if cross-site)
+      maxAge: 1000 * 60 * 60, // 1 hour
+    })
+    res.json({username:req.body.username});
 })
 
 
