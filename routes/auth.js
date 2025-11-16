@@ -13,6 +13,7 @@ router.post("/signup",signup,(req,res)=>{
 router.post("/signin",signin,(req,res)=>{
     const{username}=req.data;
     console.log(req.data);
+    // console.log(fullname);
     res.cookie("token", username, {
       httpOnly: true,     // JS on frontend can’t access (security)
       secure: false,      // true if using https

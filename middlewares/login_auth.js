@@ -8,7 +8,8 @@ const signin = async (req, res, next) => {
       const user = await User.find({
         username: req.body.username,
       });
-      const { username, password } = user[0];
+      const { username, password} = user[0];
+      // console.log(fullname,username)
       if (username === req.body.username && password === req.body.password) {
         req.data=user[0];
         next();

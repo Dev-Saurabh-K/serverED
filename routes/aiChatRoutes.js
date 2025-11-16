@@ -1,105 +1,75 @@
 import express from "express";
 import { chat } from "../ai/aiservice.js";
 import { payload } from "../ai/utils/readimg.js";
-
 // import { chat } from "../ai/aiservice.js";
-
+import fs from "fs";
 import multer from "multer";
+//importing middleware
+import requireAuth from "../middlewares/checkSession.js";
 
 // const upload=multer({dest: "uploads/"})
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "./uploads");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
+const router = express.Router();
+
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+  destination: (req, file, cb) => cb(null, "./uploads"),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 const upload = multer({ storage });
 
-const router = express.Router();
+function fileToGenerativePart(filePath, mimeType) {
+  // 1. Read the file content from the disk into a Buffer
+  const fileBuffer = fs.readFileSync(filePath);
 
-router.post("/chat",async(req,res)=>{
-    const response=await chat.sendMessage({
-        message: req.body.user
-    })
-    console.log(req.body)
-    console.log(response.text);
-    res.send(response.text);
-})
+  // 2. Convert the Buffer to a Base64 string
+  const base64Data = fileBuffer.toString("base64");
 
-// router.post("/chat", upload.single("image"), async (req, res) => {
-//   try {
-//     console.log("Text:", req.body.user);
-//     console.log("File:", req.file);
+  return {
+    inlineData: {
+      data: base64Data, // The Base64 string
+      mimeType,
+    },
+  };
+}
 
-//     const response = await chat.sendMessage({
-//       // message: req.body.user
-//       message: [
-//         { type: "text", text: "your message" },
-//         { type: "image", image: imageBase64 },
-//       ],
-//     });
+router.post("/chat",requireAuth, upload.single("image"), async (req, res) => {
+  if (req.file) {
+    const filepath = req.file.path;
+    const mimeType = req.file.mimetype;
 
-//     console.log("AI:", response.text);
+    const imagePart = fileToGenerativePart(filepath, mimeType);
 
-//     res.send({
-//       message: response.text,
-//       // file: req.file ? req.file.filename : null,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Server error");
-//   }
-// });
-// router.post("/chat", upload.single("image"), async (req, res) => {
-//     try {
-//         console.log("Text:", req.body.user);
-//         console.log("File:", req.file);
+    const contents = [imagePart, { text: req.body.user }];
+    console.log(req.file);
+    console.log(req.body.user);
 
-//         let imageBase64 = null;
+    var response = await chat.sendMessage({
+      // message: req.body.user,
+      // message: contents,
+      message: contents,
+    });
+  }else{
+    var response = await chat.sendMessage({
+      message: req.body.user,
+      // message: contents,
+      // message: contents,
+    });
+  }
 
-//         // If an image is uploaded, convert to base64
-//         if (req.file) {
-//             imageBase64 = req.file.buffer.toString("base64");
-//         }
-
-//         // Prepare AI input
-//         const aiInput = [
-//             { type: "text", text: req.body.user }
-//         ];
-
-//         if (imageBase64) {
-//             aiInput.push({
-//                 type: "image",
-//                 image: imageBase64
-//             });
-//         }
-
-//         // Send text + image to AI
-//         const response = await chat.sendMessage({
-//             message: aiInput
-//         });
-
-//         console.log("AI:", response.text);
-
-//         res.send({
-//             message: response.text,
-//             file: req.file ? req.file.originalname : null
-//         });
-
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).send("Server error");
-//     }
-// });
+  // console.log(req.body);
+  console.log(response.text);
+  res.send(response.text);
+});
 
 
-// router.post("/profile",upload.single("avatar"),async(req,res)=>{
-//     res.send(req.file);
-// })
-
-router.get("/data", async (req, res) => {
+router.get("/data",async (req, res) => {
   //ytest
   // const resp = await chat.sendMessage({
   //   message: payload,
@@ -108,7 +78,7 @@ router.get("/data", async (req, res) => {
 
   //modifying test
   // res.send(resp.text);
-
+  res.clearCookie('token')
   res.json({
     name: "Saurabh",
     team: "Explorers",

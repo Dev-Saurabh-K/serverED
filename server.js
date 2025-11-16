@@ -6,6 +6,7 @@ import aiChatRoute from "./routes/aiChatRoutes.js";
 import auth from "./routes/auth.js";
 // import imgrouter from "./routes/img.js";
 import cookieParser from "cookie-parser";
+// import requireAuth from "./middlewares/checkSession.js";
 dotenv.config();
 const app = express();
 
