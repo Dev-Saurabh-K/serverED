@@ -1,8 +1,7 @@
-import connectDB from "../models/db_config.js";
+
 import { User } from "../models/models.js";
 
 const signin = async (req, res, next) => {
-  connectDB();
 
   try{
       const user = await User.find({

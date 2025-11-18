@@ -9,6 +9,12 @@ const userSchema=new mongoose.Schema({
     language:String
 })
 
+const userChats=new mongoose.Schema({
+    username:String,
+    userMessage:String,
+    aiMessage:String
+})
+
 // const newUserSchema=new mongoose.Schema({
 //     fullname:String,
 //     username:String,
@@ -17,5 +23,6 @@ const userSchema=new mongoose.Schema({
 // })
 
 const User = mongoose.model("User", userSchema);
+const Chats=mongoose.model("chats",userChats);
 // const newUser=mongoose.model("newUser", newUserSchema);
-export {User}
+export {User, Chats}

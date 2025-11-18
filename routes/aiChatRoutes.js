@@ -1,7 +1,8 @@
 import express from "express";
 import { chat } from "../ai/aiservice.js";
 import { payload } from "../ai/utils/readimg.js";
-// import { chat } from "../ai/aiservice.js";
+import addChat from "../middlewares/addChat.js";
+
 import fs from "fs";
 import multer from "multer";
 //importing middleware
@@ -39,9 +40,10 @@ function fileToGenerativePart(filePath, mimeType) {
   };
 }
 
-router.post("/chat",requireAuth, upload.single("image"), async (req, res) => {
+router.post("/chat/:user",requireAuth, upload.single("image"), async (req, res, next) => {
   if (req.file) {
     const filepath = req.file.path;
+    console.log(filepath)
     const mimeType = req.file.mimetype;
 
     const imagePart = fileToGenerativePart(filepath, mimeType);
@@ -63,10 +65,14 @@ router.post("/chat",requireAuth, upload.single("image"), async (req, res) => {
     });
   }
 
-  // console.log(req.body);
-  console.log(response.text);
-  res.send(response.text);
-});
+  // console.log(response.text);
+  // res.send(response.text);
+  req.data={
+    "userMessage":req.body.user,
+    "aiMessage":response.text
+  }
+  next();
+},addChat);
 
 
 router.get("/data",async (req, res) => {
