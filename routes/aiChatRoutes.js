@@ -2,11 +2,13 @@ import express from "express";
 import { chat } from "../ai/aiservice.js";
 import { payload } from "../ai/utils/readimg.js";
 import addChat from "../middlewares/addChat.js";
+import { Chats } from "../models/models.js";
 
 import fs from "fs";
 import multer from "multer";
 //importing middleware
 import requireAuth from "../middlewares/checkSession.js";
+
 
 // const upload=multer({dest: "uploads/"})
 // const storage = multer.diskStorage({
@@ -96,5 +98,29 @@ router.post("/image/upload", upload.single("file"), (req, res) => {
     id: req.file,
   });
 });
+
+router.post("/session/create", async (req, res) => {
+  try {
+    const response = await chat.sendMessage({
+      message: `make a one liner chat session heading for the given prompts "${req.body.firstline}". must return only one line.`,
+    });
+
+    // Save heading in database
+    const updatedChat = await Chats.updateMany(
+      { username: req.body.username },
+      { $set: { chatSession: response.text } }
+    );
+
+    console.log("Updated:", updatedChat);
+
+    // Send heading back to frontend
+    res.send(response.text);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error generating heading");
+  }
+});
+
 
 export default router;

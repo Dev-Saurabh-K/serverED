@@ -2,6 +2,7 @@ import express from "express"
 import requireAuth from "../middlewares/checkSession.js"
 import retriveChats from "../middlewares/retriveChats.js";
 import addChat from "../middlewares/addChat.js";
+import retriveSessions from "../middlewares/retriveSessions.js";
 
 const router=express.Router();
 
@@ -17,6 +18,11 @@ router.get("/chats/:user",requireAuth,retriveChats,(req,res)=>{
 //     console.log(req.params.user);
 //     res.send(req.data);
 // })
+
+router.post("/sessions/:user",retriveSessions,(req,res)=>{
+    console.log(req.params.user);
+    res.send(req.data);
+})
 
 
 export default router;

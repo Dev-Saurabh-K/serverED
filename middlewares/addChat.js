@@ -10,7 +10,8 @@ const addChat=async(req,res)=>{
         userMessage:userMessage,
         aiMessage:aiMessage
     });
-    console.log(currentChatData);
+    // console.log(currentChatData);
+
     res.send(currentChatData);
     
 }

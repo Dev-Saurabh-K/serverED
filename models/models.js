@@ -11,6 +11,7 @@ const userSchema=new mongoose.Schema({
 
 const userChats=new mongoose.Schema({
     username:String,
+    chatSession:String,  //id for multiple chat sessions
     userMessage:String,
     aiMessage:String
 })
