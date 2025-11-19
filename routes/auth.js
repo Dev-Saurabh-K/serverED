@@ -16,8 +16,8 @@ router.post("/signin",signin,(req,res)=>{
     // console.log(fullname);
     res.cookie("token", username, {
       httpOnly: true,     // JS on frontend can’t access (security)
-      secure: false,      // true if using https
-      sameSite: "lax",    // "strict" or "none" (if cross-site)
+      secure: true,      // true if using https
+      sameSite: "none",    // "strict" or "none" (if cross-site)
       maxAge: 1000 * 60 * 60, // 1 hour
     })
     res.json({username:req.body.username});
