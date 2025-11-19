@@ -15,7 +15,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: ["https://lok-sahayak.vercel.app", "http://localhost:5173"],
+    origin: ["https://lok-sahayak-client.vercel.app", "http://localhost:5173"],
     credentials: true,
   })
 );
