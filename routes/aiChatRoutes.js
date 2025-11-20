@@ -105,13 +105,13 @@ router.post("/session/create", async (req, res) => {
       message: `make a one liner chat session heading for the given prompts "${req.body.firstline}". must return only one line.`,
     });
 
-    // Save heading in database
-    const updatedChat = await Chats.updateMany(
-      { username: req.body.username },
-      { $set: { chatSession: response.text } }
-    );
+    // // Save heading in database
+    // const updatedChat = await Chats.updateMany(
+    //   { username: req.body.username },
+    //   { $set: { chatSession: response.text } }
+    // );
 
-    console.log("Updated:", updatedChat);
+    // console.log("Updated:", updatedChat);
 
     // Send heading back to frontend
     res.send(response.text);
