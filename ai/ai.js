@@ -3,7 +3,7 @@
 import lokshayakPrompt from "./utils/readPrompt.js";
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({apiKey:"AIzaSyAViTn0nt4HFsKx2QyspS26FwJPq77demc"});
+const ai = new GoogleGenAI({apiKey:`${process.env.GEMINI_API_KEY}`,});
 // console.log(lokshayakPrompt)
 
 async function main() {
